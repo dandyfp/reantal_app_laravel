@@ -34,6 +34,18 @@ class transaction extends Model
         'ended_at' => 'date',
     ];
 
+    public static function generateUniqeTrxId()
+    {
+        $prefix = 'SW';
+        do {
+            $randomString = $prefix . mt_rand(1000, 9999);
+        } while (self::where('trx_id', $randomString)->exit());
+
+
+        return $randomString;
+    }
+
+
 
     public function store(): BelongsTo
     {
