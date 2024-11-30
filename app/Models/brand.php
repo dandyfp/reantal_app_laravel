@@ -15,7 +15,7 @@ class brand extends Model
     protected $fillable = [
         'name',
         'slug',
-        'icon',
+        'logo',
     ];
 
     public function setNameAttribute($value)
