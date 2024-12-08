@@ -41,8 +41,6 @@ class StoreResource extends Resource
                         false => 'Not Open',
                     ])
                     ->required()
-
-
             ]);
     }
 
@@ -50,7 +48,18 @@ class StoreResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+
+                Tables\Columns\ImageColumn::make('thumbnail'),
+
+                Tables\Columns\IconColumn::make('is_open')
+                    ->boolean()
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->label('Buka?'),
             ])
             ->filters([
                 //
