@@ -4,12 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Filament\Resources\ProductResource\RelationManagers\PhotosRelationManager;
 use App\Models\brand;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -56,8 +58,8 @@ class ProductResource extends Resource
                         $categoryId = $get('category_id');
                         if ($categoryId) {
                             return brand::whereHas('brandCategories', function ($query) use ($categoryId) {
-                                $query->where('categoryId', $categoryId);
-                            })->pulck('name', 'id');
+                                $query->where('category_id', $categoryId);
+                            })->pluck('name', 'id');
                         }
                         return [];
                     })
@@ -71,10 +73,22 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\ImageColumn::make('thumbnail'),
+
+                Tables\Columns\ImageColumn::make('category.name'),
+
+                Tables\Columns\ImageColumn::make('brand.name'),
+
             ])
             ->filters([
-                //
+                SelectFilter::make('category_id')
+                    ->label('Category')
+                    ->relationship('category', 'name'),
+                SelectFilter::make('brand_id')
+                    ->label('Brand')
+                    ->relationship('Brand', 'name')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -89,7 +103,7 @@ class ProductResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PhotosRelationManager::class,
         ];
     }
 
